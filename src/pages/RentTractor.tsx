@@ -333,13 +333,13 @@ const RentTractor = () => {
             <div className="grid grid-cols-1 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Your Name *
+                  Your Name & Phone number*
                 </label>
                 <input
                   type="text"
                   value={renterName}
                   onChange={(e) => setRenterName(e.target.value)}
-                  placeholder="Enter your full name"
+                  placeholder="Enter your full name & Phone numberl"
                   className="input-field"
                 />
               </div>
