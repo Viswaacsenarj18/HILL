@@ -76,20 +76,15 @@ const Dashboard = () => {
           </p>
         )}
 
-        {/* NODE 1 & NODE 2 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
           <SensorCard title="📡 Node 1" color="green" data={node1} />
           <SensorCard title="📡 Node 2" color="blue" data={node2} />
-
         </div>
 
-        {/* NODE 3 CONTROL */}
         <div className="mt-10 max-w-lg mx-auto">
           <Node3Control />
         </div>
 
-        {/* NPK DASHBOARD */}
         <div className="mt-12">
           <NPKDashboard />
         </div>
@@ -111,22 +106,52 @@ const SensorCard = ({
   title: string;
   color: "green" | "blue";
   data: ThingSpeakFeed | null;
-}) => (
-  <div className="bg-white p-6 rounded-2xl shadow-md border">
-    <h2
-      className={`text-lg font-semibold mb-6 text-${color}-600 text-center`}
-    >
-      {title}
-    </h2>
+}) => {
+  
+  // 🔥 Modify temperature only for Node 2
+  let temperatureValue = data?.field1;
 
-    <div className="space-y-5">
-      <SensorRow icon={<Thermometer className="text-red-500 w-5 h-5" />} label="Temperature" value={data?.field1} unit="°C" />
-      <SensorRow icon={<Activity className="text-purple-500 w-5 h-5" />} label="pH Level" value={data?.field2} />
-      <SensorRow icon={<Droplet className="text-blue-500 w-5 h-5" />} label="Water Level" value={data?.field3} />
-      <SensorRow icon={<Sun className="text-yellow-500 w-5 h-5" />} label="LDR (Light)" value={data?.field4} />
+  if (title === "📡 Node 2" && data?.field1) {
+    const num = parseFloat(data.field1);
+    if (!isNaN(num)) {
+      temperatureValue = (num / 3.5).toFixed(2); // divide by 3.5
+    }
+  }
+
+  return (
+    <div className="bg-white p-6 rounded-2xl shadow-md border">
+      <h2
+        className={`text-lg font-semibold mb-6 text-${color}-600 text-center`}
+      >
+        {title}
+      </h2>
+
+      <div className="space-y-5">
+        <SensorRow
+          icon={<Thermometer className="text-red-500 w-5 h-5" />}
+          label="Temperature"
+          value={temperatureValue}
+          unit="°C"
+        />
+        <SensorRow
+          icon={<Activity className="text-purple-500 w-5 h-5" />}
+          label="pH Level"
+          value={data?.field2}
+        />
+        <SensorRow
+          icon={<Droplet className="text-blue-500 w-5 h-5" />}
+          label="Water Level"
+          value={data?.field3}
+        />
+        <SensorRow
+          icon={<Sun className="text-yellow-500 w-5 h-5" />}
+          label="LDR (Light)"
+          value={data?.field4}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const SensorRow = ({
   icon,
