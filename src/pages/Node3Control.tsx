@@ -21,7 +21,10 @@ const Node3Control = () => {
       if (json.feeds && json.feeds.length > 0) {
         const data = json.feeds[0];
 
-        setMotorStatus(data.field1 === "1");
+        // 🔥 Motor moved to FIELD 3
+        setMotorStatus(data.field3 === "1");
+
+        // Fertilizer remains FIELD 2
         setFertilizerStatus(data.field2 === "1");
       }
     } catch (err) {
@@ -39,15 +42,14 @@ const Node3Control = () => {
       setLoading(true);
 
       const response = await fetch(
-        `${WRITE_API}&field1=${newMotor}&field2=${newFertilizer}`
+        `${WRITE_API}&field3=${newMotor}&field2=${newFertilizer}`
       );
 
       const result = await response.text();
 
       // ThingSpeak returns entry ID if success
       if (result !== "0") {
-        // Always re-fetch from server to sync UI
-        await fetchStatus();
+        await fetchStatus(); // Sync UI
       } else {
         alert("Update rejected. Wait 15 seconds.");
       }
