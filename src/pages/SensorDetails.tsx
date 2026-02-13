@@ -81,14 +81,28 @@ export default function SensorDetails() {
 
   const current = fieldMap[selected];
 
-  /* ================= FIX SPIKE CUTTING ================= */
-
   const formattedData = current.data.map((item: any) => ({
-    ...item,
+    entry_id: item.entry_id,
     value: Number(item[current.key]),
   }));
 
   const maxValue = Math.max(...formattedData.map((d: any) => d.value), 100);
+
+  /* ================= DOWNLOAD ================= */
+
+  const downloadFile = (type: "json" | "csv" | "xml") => {
+    const channelId =
+      selected.includes("node1")
+        ? NODE1_ID
+        : selected.includes("node2")
+        ? NODE2_ID
+        : NPK_ID;
+
+    window.open(
+      `https://api.thingspeak.com/channels/${channelId}/feeds.${type}`,
+      "_blank"
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 p-4 md:p-8">
@@ -122,56 +136,44 @@ export default function SensorDetails() {
         {/* MAIN */}
         <div className="lg:col-span-3 bg-white rounded-2xl shadow-xl p-6 md:p-10">
 
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-700">
+          {/* HEADER */}
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+            <h2 className="text-2xl font-bold text-gray-800">
               {current.label}
             </h2>
 
-            <button
-              onClick={fetchData}
-              className="bg-emerald-600 text-white px-4 py-2 rounded-xl flex items-center gap-2"
-            >
-              <RefreshCw size={16} className={loading ? "animate-spin" : ""}/>
-              Refresh
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <DownloadBtn label="JSON" onClick={() => downloadFile("json")} />
+              <DownloadBtn label="CSV" onClick={() => downloadFile("csv")} />
+              <DownloadBtn label="XML" onClick={() => downloadFile("xml")} />
+              <button
+                onClick={fetchData}
+                className="bg-emerald-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-emerald-700 transition"
+              >
+                <RefreshCw size={16} className={loading ? "animate-spin" : ""}/>
+                Refresh
+              </button>
+            </div>
           </div>
 
-          {/* GRAPH CARD */}
-          <div className="w-full h-[400px] md:h-[520px] bg-slate-50 rounded-2xl p-6">
+          {/* GRAPH */}
+          <div className="w-full h-[380px] sm:h-[420px] md:h-[500px] bg-slate-50 rounded-2xl p-6">
 
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={formattedData}
-                margin={{ top: 40, right: 50, left: 40, bottom: 30 }}
+                margin={{ top: 30, right: 40, left: 20, bottom: 20 }}
               >
                 <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" />
-
-                <XAxis
-                  dataKey="entry_id"
-                  tick={{ fontSize: 12 }}
-                  padding={{ left: 20, right: 20 }}
-                />
-
-                <YAxis
-                  domain={[0, maxValue + 30]}
-                  tick={{ fontSize: 12 }}
-                />
-
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: "12px",
-                    border: "none",
-                    boxShadow: "0 15px 40px rgba(0,0,0,0.1)"
-                  }}
-                />
-
+                <XAxis dataKey="entry_id" />
+                <YAxis domain={[0, maxValue + 20]} />
+                <Tooltip />
                 <Line
                   type="monotone"
                   dataKey="value"
                   stroke={current.color}
-                  strokeWidth={4}
-                  dot={{ r: 4 }}
-                  activeDot={{ r: 8 }}
+                  strokeWidth={3}
+                  dot={false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -184,7 +186,7 @@ export default function SensorDetails() {
   );
 }
 
-/* SIDEBAR */
+/* COMPONENTS */
 
 const SidebarSection = ({title, children}:any)=>(
   <div>
@@ -203,6 +205,15 @@ const SidebarItem = ({label, icon, active, onClick}:any)=>(
     }`}
   >
     {icon}
+    {label}
+  </button>
+);
+
+const DownloadBtn = ({label, onClick}:any)=>(
+  <button
+    onClick={onClick}
+    className="bg-amber-500 text-white px-4 py-2 rounded-xl hover:bg-amber-600 transition"
+  >
     {label}
   </button>
 );
