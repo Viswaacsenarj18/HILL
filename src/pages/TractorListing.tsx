@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import TractorCard from '@/components/tractors/TractorCard';
 import { Tractor, Search, Filter, MapPin } from 'lucide-react';
+import { getApiUrl } from '@/config/api';
 
 const TractorListing = () => {
   const { t } = useTranslation();
