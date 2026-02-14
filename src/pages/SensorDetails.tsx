@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Thermometer,
-  Activity,
-  Droplet,
-  Sun,
-  Leaf,
-  FlaskConical,
-  Shield,
-  RefreshCw,
-} from "lucide-react";
-
-import {
   LineChart,
   Line,
   XAxis,
@@ -20,163 +9,244 @@ import {
   CartesianGrid,
 } from "recharts";
 
-/* ================= CHANNEL IDS ================= */
+/* ================= CONFIG ================= */
 
-const NODE1_ID = "3232296";
-const NODE2_ID = "3233683";
-const NPK_ID = "3261075";
+const CHANNEL_ID = "3232296";
+
+/* ================= TYPES ================= */
+
+type Feed = {
+  entry_id: number;
+  field1?: string; // Node1 CSV
+  field2?: string; // Node2 CSV
+  field3?: string; // NPK CSV
+};
+
+/* ================= COMPONENT ================= */
 
 export default function SensorDetails() {
-  const [node1, setNode1] = useState<any[]>([]);
-  const [node2, setNode2] = useState<any[]>([]);
-  const [npk, setNpk] = useState<any[]>([]);
+  const [feeds, setFeeds] = useState<Feed[]>([]);
   const [selected, setSelected] = useState<string>("node1-ldr");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  /* ================= FETCH ================= */
+
   const fetchData = async () => {
     try {
-      setLoading(true);
-
-      const [n1, n2, n4] = await Promise.all([
-        fetch(`https://api.thingspeak.com/channels/${NODE1_ID}/feeds.json?results=20`),
-        fetch(`https://api.thingspeak.com/channels/${NODE2_ID}/feeds.json?results=20`),
-        fetch(`https://api.thingspeak.com/channels/${NPK_ID}/feeds.json?results=20`),
-      ]);
-
-      const j1 = await n1.json();
-      const j2 = await n2.json();
-      const j4 = await n4.json();
-
-      setNode1(j1.feeds || []);
-      setNode2(j2.feeds || []);
-      setNpk(j4.feeds || []);
+      const res = await fetch(
+        `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=40`
+      );
+      const json = await res.json();
+      setFeeds(json.feeds || []);
     } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+      console.error("Fetch error:", err);
     }
+  };
+
+  /* ================= PARSE ================= */
+
+  const parseNode = (value?: string) => {
+    if (!value) return [0, 0, 0, 0];
+    const parts = value.split(",").map((v) => Number(v.trim()));
+    return [
+      parts[0] || 0,
+      parts[1] || 0,
+      parts[2] || 0,
+      parts[3] || 0,
+    ];
+  };
+
+  const parseNPK = (value?: string) => {
+    if (!value) return [0, 0, 0];
+    const parts = value.split(",").map((v) => Number(v.trim()));
+    return [parts[0] || 0, parts[1] || 0, parts[2] || 0];
   };
 
   /* ================= FIELD MAP ================= */
 
   const fieldMap: any = {
-    "node1-temp": { label: "Node 1 - Temperature", key: "field1", data: node1, color: "#ef4444", icon: <Thermometer size={16}/> },
-    "node1-ph": { label: "Node 1 - pH Level", key: "field2", data: node1, color: "#8b5cf6", icon: <Activity size={16}/> },
-    "node1-water": { label: "Node 1 - Water Level", key: "field3", data: node1, color: "#3b82f6", icon: <Droplet size={16}/> },
-    "node1-ldr": { label: "Node 1 - LDR (Light)", key: "field4", data: node1, color: "#facc15", icon: <Sun size={16}/> },
+    // NODE 1
+    "node1-temp": { label: "Temperature", index: 0, source: "field1", color: "#ef4444" },
+    "node1-ph": { label: "pH Level", index: 1, source: "field1", color: "#8b5cf6" },
+    "node1-water": { label: "Water Level", index: 2, source: "field1", color: "#3b82f6" },
+    "node1-ldr": { label: "LDR (Light)", index: 3, source: "field1", color: "#10b981" },
+    "node1-all": { label: "All Values", source: "field1" },
 
-    "node2-temp": { label: "Node 2 - Temperature", key: "field1", data: node2, color: "#dc2626", icon: <Thermometer size={16}/> },
-    "node2-ph": { label: "Node 2 - pH Level", key: "field2", data: node2, color: "#7c3aed", icon: <Activity size={16}/> },
-    "node2-water": { label: "Node 2 - Water Level", key: "field3", data: node2, color: "#2563eb", icon: <Droplet size={16}/> },
-    "node2-ldr": { label: "Node 2 - LDR (Light)", key: "field4", data: node2, color: "#eab308", icon: <Sun size={16}/> },
+    // NODE 2
+    "node2-temp": { label: "Temperature", index: 0, source: "field2", color: "#dc2626" },
+    "node2-ph": { label: "pH Level", index: 1, source: "field2", color: "#7c3aed" },
+    "node2-water": { label: "Water Level", index: 2, source: "field2", color: "#2563eb" },
+    "node2-ldr": { label: "LDR (Light)", index: 3, source: "field2", color: "#f59e0b" },
+    "node2-all": { label: "All Values", source: "field2" },
 
-    "npk-n": { label: "Nitrogen (N)", key: "field1", data: npk, color: "#16a34a", icon: <Leaf size={16}/> },
-    "npk-p": { label: "Phosphorus (P)", key: "field2", data: npk, color: "#2563eb", icon: <FlaskConical size={16}/> },
-    "npk-k": { label: "Potassium (K)", key: "field3", data: npk, color: "#f97316", icon: <Shield size={16}/> },
+    // NPK
+    "npk-n": { label: "Nitrogen", index: 0, source: "field3", color: "#16a34a" },
+    "npk-p": { label: "Phosphorus", index: 1, source: "field3", color: "#2563eb" },
+    "npk-k": { label: "Potassium", index: 2, source: "field3", color: "#f97316" },
+    "npk-all": { label: "All Values", source: "field3" },
   };
 
   const current = fieldMap[selected];
 
-  const formattedData = current.data.map((item: any) => ({
-    entry_id: item.entry_id,
-    value: Number(item[current.key]),
-  }));
+  /* ================= FORMAT GRAPH ================= */
 
-  const maxValue = Math.max(...formattedData.map((d: any) => d.value), 100);
+  let formattedData: any[] = [];
+
+  if (selected.includes("all")) {
+    formattedData = feeds.map((item) => {
+      const values =
+        current.source === "field3"
+          ? parseNPK(item.field3)
+          : parseNode(item[current.source]);
+
+      return {
+        entry_id: item.entry_id,
+        v1: values[0] || 0,
+        v2: values[1] || 0,
+        v3: values[2] || 0,
+        v4: values[3] || 0,
+      };
+    });
+  } else {
+    formattedData = feeds.map((item) => {
+      const values =
+        current.source === "field3"
+          ? parseNPK(item.field3)
+          : parseNode(item[current.source]);
+
+      return {
+        entry_id: item.entry_id,
+        value: values[current.index] || 0,
+      };
+    });
+  }
 
   /* ================= DOWNLOAD ================= */
 
   const downloadFile = (type: "json" | "csv" | "xml") => {
-    const channelId =
-      selected.includes("node1")
-        ? NODE1_ID
-        : selected.includes("node2")
-        ? NODE2_ID
-        : NPK_ID;
-
     window.open(
-      `https://api.thingspeak.com/channels/${channelId}/feeds.${type}`,
+      `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.${type}?results=100`,
       "_blank"
     );
   };
 
+  /* ================= UI ================= */
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div className="min-h-screen bg-gray-100">
 
-        {/* SIDEBAR */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 space-y-6">
+      {/* HERO SECTION */}
+      <div className="relative h-[320px] overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854"
+          className="w-full h-full object-cover"
+          alt="Farm"
+        />
+        <div className="absolute inset-0 bg-black/60"></div>
 
-          <SidebarSection title="📡 Node 1">
-            <SidebarItem label="Temperature" icon={<Thermometer size={14}/>} active={selected==="node1-temp"} onClick={()=>setSelected("node1-temp")}/>
-            <SidebarItem label="pH Level" icon={<Activity size={14}/>} active={selected==="node1-ph"} onClick={()=>setSelected("node1-ph")}/>
-            <SidebarItem label="Water Level" icon={<Droplet size={14}/>} active={selected==="node1-water"} onClick={()=>setSelected("node1-water")}/>
-            <SidebarItem label="LDR (Light)" icon={<Sun size={14}/>} active={selected==="node1-ldr"} onClick={()=>setSelected("node1-ldr")}/>
-          </SidebarSection>
-
-          <SidebarSection title="📡 Node 2">
-            <SidebarItem label="Temperature" icon={<Thermometer size={14}/>} active={selected==="node2-temp"} onClick={()=>setSelected("node2-temp")}/>
-            <SidebarItem label="pH Level" icon={<Activity size={14}/>} active={selected==="node2-ph"} onClick={()=>setSelected("node2-ph")}/>
-            <SidebarItem label="Water Level" icon={<Droplet size={14}/>} active={selected==="node2-water"} onClick={()=>setSelected("node2-water")}/>
-            <SidebarItem label="LDR (Light)" icon={<Sun size={14}/>} active={selected==="node2-ldr"} onClick={()=>setSelected("node2-ldr")}/>
-          </SidebarSection>
-
-          <SidebarSection title="🌿 NPK">
-            <SidebarItem label="Nitrogen" icon={<Leaf size={14}/>} active={selected==="npk-n"} onClick={()=>setSelected("npk-n")}/>
-            <SidebarItem label="Phosphorus" icon={<FlaskConical size={14}/>} active={selected==="npk-p"} onClick={()=>setSelected("npk-p")}/>
-            <SidebarItem label="Potassium" icon={<Shield size={14}/>} active={selected==="npk-k"} onClick={()=>setSelected("npk-k")}/>
-          </SidebarSection>
-
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+          <h1 className="text-4xl md:text-5xl font-bold">
+            🌱 Sensor Analytics
+          </h1>
         </div>
+      </div>
 
-        {/* MAIN */}
-        <div className="lg:col-span-3 bg-white rounded-2xl shadow-xl p-6 md:p-10">
+      {/* MAIN CONTENT */}
+      <div className="max-w-6xl mx-auto px-6 -mt-20 pb-16 relative z-10">
 
-          {/* HEADER */}
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">
-              {current.label}
-            </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-            <div className="flex flex-wrap gap-3">
-              <DownloadBtn label="JSON" onClick={() => downloadFile("json")} />
-              <DownloadBtn label="CSV" onClick={() => downloadFile("csv")} />
-              <DownloadBtn label="XML" onClick={() => downloadFile("xml")} />
-              <button
-                onClick={fetchData}
-                className="bg-emerald-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-emerald-700 transition"
-              >
-                <RefreshCw size={16} className={loading ? "animate-spin" : ""}/>
-                Refresh
-              </button>
-            </div>
+          {/* SIDEBAR */}
+          <div className="bg-white rounded-2xl shadow-xl p-6 space-y-6">
+
+            <Sidebar title="🌡 Node 1">
+              {["temp","ph","water","ldr","all"].map((type) => {
+                const key = `node1-${type}`;
+                return (
+                  <SidebarItem
+                    key={key}
+                    label={fieldMap[key].label}
+                    active={selected === key}
+                    onClick={() => setSelected(key)}
+                  />
+                );
+              })}
+            </Sidebar>
+
+            <Sidebar title="🛰 Node 2">
+              {["temp","ph","water","ldr","all"].map((type) => {
+                const key = `node2-${type}`;
+                return (
+                  <SidebarItem
+                    key={key}
+                    label={fieldMap[key].label}
+                    active={selected === key}
+                    onClick={() => setSelected(key)}
+                  />
+                );
+              })}
+            </Sidebar>
+
+            <Sidebar title="🌿 NPK">
+              {["n","p","k","all"].map((type) => {
+                const key = `npk-${type}`;
+                return (
+                  <SidebarItem
+                    key={key}
+                    label={fieldMap[key].label}
+                    active={selected === key}
+                    onClick={() => setSelected(key)}
+                  />
+                );
+              })}
+            </Sidebar>
+
           </div>
 
-          {/* GRAPH */}
-          <div className="w-full h-[380px] sm:h-[420px] md:h-[500px] bg-slate-50 rounded-2xl p-6">
+          {/* GRAPH CARD */}
+          <div className="lg:col-span-3 bg-white rounded-2xl shadow-xl p-8">
 
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={formattedData}
-                margin={{ top: 30, right: 40, left: 20, bottom: 20 }}
-              >
-                <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" />
-                <XAxis dataKey="entry_id" />
-                <YAxis domain={[0, maxValue + 20]} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke={current.color}
-                  strokeWidth={3}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">
+                {current.label}
+              </h2>
+
+              <div className="flex gap-3">
+                <DownloadBtn label="JSON" onClick={() => downloadFile("json")} />
+                <DownloadBtn label="CSV" onClick={() => downloadFile("csv")} />
+                <DownloadBtn label="XML" onClick={() => downloadFile("xml")} />
+              </div>
+            </div>
+
+            <div className="w-full h-[400px] bg-gray-50 rounded-2xl p-6">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={formattedData}>
+                  <CartesianGrid strokeDasharray="4 4" />
+                  <XAxis dataKey="entry_id" />
+                  <YAxis />
+                  <Tooltip />
+
+                  {selected.includes("all") ? (
+                    <>
+                      <Line type="monotone" dataKey="v1" stroke="#ef4444" />
+                      <Line type="monotone" dataKey="v2" stroke="#8b5cf6" />
+                      <Line type="monotone" dataKey="v3" stroke="#3b82f6" />
+                      <Line type="monotone" dataKey="v4" stroke="#10b981" />
+                    </>
+                  ) : (
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke={current.color}
+                      strokeWidth={3}
+                    />
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
 
           </div>
 
@@ -186,30 +256,29 @@ export default function SensorDetails() {
   );
 }
 
-/* COMPONENTS */
+/* ================= SMALL COMPONENTS ================= */
 
-const SidebarSection = ({title, children}:any)=>(
+const Sidebar = ({ title, children }: any) => (
   <div>
     <h3 className="font-semibold text-gray-700 mb-3">{title}</h3>
     <div className="space-y-2">{children}</div>
   </div>
 );
 
-const SidebarItem = ({label, icon, active, onClick}:any)=>(
+const SidebarItem = ({ label, active, onClick }: any) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl transition ${
+    className={`w-full px-4 py-2 rounded-xl transition text-left ${
       active
-        ? "bg-emerald-600 text-white shadow-md"
+        ? "bg-emerald-600 text-white"
         : "bg-gray-100 hover:bg-gray-200 text-gray-700"
     }`}
   >
-    {icon}
     {label}
   </button>
 );
 
-const DownloadBtn = ({label, onClick}:any)=>(
+const DownloadBtn = ({ label, onClick }: any) => (
   <button
     onClick={onClick}
     className="bg-amber-500 text-white px-4 py-2 rounded-xl hover:bg-amber-600 transition"
