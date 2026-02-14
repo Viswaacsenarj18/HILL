@@ -83,16 +83,16 @@ const Node3Control = () => {
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-xl mx-auto border">
+    <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl md:shadow-2xl p-4 sm:p-6 md:p-8 max-w-2xl mx-auto border">
 
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+      <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-center text-gray-800 mb-4 sm:mb-6 md:mb-8">
         ⚙ {t("motorAndFertilizerControl")}
       </h2>
 
       {/* TIMER DISPLAY */}
       {isLocked && (
-        <div className="flex justify-center items-center gap-2 mb-6 bg-amber-100 text-amber-700 px-4 py-2 rounded-full">
-          <Timer size={18} />
+        <div className="flex justify-center items-center gap-2 mb-4 sm:mb-6 md:mb-8 bg-amber-100 text-amber-700 px-3 sm:px-4 py-2 sm:py-3 rounded-full text-xs sm:text-sm md:text-base">
+          <Timer size={16} className="sm:w-5 sm:h-5" />
           <span className="font-semibold">
             {t("pleaseWait")} {lockTimer}s...
           </span>
@@ -100,18 +100,18 @@ const Node3Control = () => {
       )}
 
       {/* ================= MOTOR ================= */}
-      <div className="mb-10">
+      <div className="mb-6 sm:mb-8 md:mb-10">
 
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-3">
-            <Power className="text-green-600" />
-            <span className="font-semibold text-lg text-gray-700">
+        <div className="flex justify-between items-center mb-3 sm:mb-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Power className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+            <span className="font-semibold text-base sm:text-lg md:text-xl text-gray-700">
               Motor Pump
             </span>
           </div>
 
           <span
-            className={`font-bold ${
+            className={`font-bold text-sm sm:text-base md:text-lg ${
               motorStatus ? "text-green-600" : "text-red-500"
             }`}
           >
@@ -119,14 +119,14 @@ const Node3Control = () => {
           </span>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-2 sm:gap-3 md:gap-4">
 
           <button
             disabled={loading || isLocked}
             onClick={() =>
               updateBoth(1, fertilizerStatus ? 1 : 0)
             }
-            className={`flex-1 py-3 rounded-xl font-semibold transition ${
+            className={`flex-1 py-2 sm:py-3 md:py-4 px-2 sm:px-3 md:px-4 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base md:text-lg transition ${
               motorStatus
                 ? "bg-green-600 text-white shadow-lg scale-105"
                 : "bg-gray-200 text-gray-800"
@@ -140,7 +140,7 @@ const Node3Control = () => {
             onClick={() =>
               updateBoth(0, fertilizerStatus ? 1 : 0)
             }
-            className={`flex-1 py-3 rounded-xl font-semibold transition ${
+            className={`flex-1 py-2 sm:py-3 md:py-4 px-2 sm:px-3 md:px-4 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base md:text-lg transition ${
               !motorStatus
                 ? "bg-red-600 text-white shadow-lg scale-105"
                 : "bg-gray-200 text-gray-800"
@@ -155,16 +155,16 @@ const Node3Control = () => {
       {/* ================= FERTILIZER ================= */}
       <div>
 
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-3">
-            <Droplet className="text-blue-600" />
-            <span className="font-semibold text-lg text-gray-700">
+        <div className="flex justify-between items-center mb-3 sm:mb-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Droplet className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
+            <span className="font-semibold text-base sm:text-lg md:text-xl text-gray-700">
               Fertilizer
             </span>
           </div>
 
           <span
-            className={`font-bold ${
+            className={`font-bold text-sm sm:text-base md:text-lg ${
               fertilizerStatus ? "text-green-600" : "text-red-500"
             }`}
           >
@@ -172,14 +172,14 @@ const Node3Control = () => {
           </span>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-2 sm:gap-3 md:gap-4">
 
           <button
             disabled={loading || isLocked}
             onClick={() =>
               updateBoth(motorStatus ? 1 : 0, 1)
             }
-            className={`flex-1 py-3 rounded-xl font-semibold transition ${
+            className={`flex-1 py-2 sm:py-3 md:py-4 px-2 sm:px-3 md:px-4 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base md:text-lg transition ${
               fertilizerStatus
                 ? "bg-green-600 text-white shadow-lg scale-105"
                 : "bg-gray-200 text-gray-800"
@@ -193,7 +193,7 @@ const Node3Control = () => {
             onClick={() =>
               updateBoth(motorStatus ? 1 : 0, 0)
             }
-            className={`flex-1 py-3 rounded-xl font-semibold transition ${
+            className={`flex-1 py-2 sm:py-3 md:py-4 px-2 sm:px-3 md:px-4 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base md:text-lg transition ${
               !fertilizerStatus
                 ? "bg-red-600 text-white shadow-lg scale-105"
                 : "bg-gray-200 text-gray-800"

@@ -97,16 +97,16 @@ const NPKDashboard = () => {
   /* ================= UI ================= */
 
   return (
-    <div className="bg-white p-10 rounded-3xl shadow-xl border mt-12">
-      <h2 className="text-3xl font-bold text-center text-emerald-700 mb-12">
+    <div className="bg-white p-4 sm:p-6 md:p-8 lg:p-10 rounded-2xl sm:rounded-3xl shadow-lg md:shadow-xl border mt-8 sm:mt-10 md:mt-12">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-emerald-700 mb-8 sm:mb-10 md:mb-12">
         🌿 {t("soilAnalysisHilly")}
       </h2>
 
-      <div className="grid md:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
         <NPKCard
           title={t("nitrogen")}
           value={nitrogen}
-          icon={<Leaf size={28} />}
+          icon={<Leaf size={24} className="sm:w-7 sm:h-7" />}
           bg="bg-green-100"
           color="text-green-600"
           bar="bg-green-500"
@@ -115,7 +115,7 @@ const NPKDashboard = () => {
         <NPKCard
           title={t("phosphorus")}
           value={phosphorus}
-          icon={<FlaskConical size={28} />}
+          icon={<FlaskConical size={24} className="sm:w-7 sm:h-7" />}
           bg="bg-blue-100"
           color="text-blue-600"
           bar="bg-blue-500"
@@ -124,18 +124,18 @@ const NPKDashboard = () => {
         <NPKCard
           title={t("potassium")}
           value={potassium}
-          icon={<Activity size={28} />}
+          icon={<Activity size={24} className="sm:w-7 sm:h-7" />}
           bg="bg-orange-100"
           color="text-orange-600"
           bar="bg-orange-500"
         />
       </div>
 
-      <div className="mt-14 bg-gradient-to-r from-emerald-100 to-green-200 p-8 rounded-2xl text-center shadow-inner">
-        <h3 className="text-xl font-semibold mb-3 text-gray-700">
+      <div className="mt-8 sm:mt-10 md:mt-14 bg-gradient-to-r from-emerald-100 to-green-200 p-4 sm:p-6 md:p-8 rounded-lg sm:rounded-2xl text-center shadow-inner">
+        <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 md:mb-3 text-gray-700">
           🌾 {t("recommendedCrop")}
         </h3>
-        <p className="text-2xl font-bold text-emerald-900">
+        <p className="text-lg sm:text-xl md:text-2xl font-bold text-emerald-900">
           {recommendedCropKey ? t(recommendedCropKey) : t("improveSoil")}
         </p>
       </div>
@@ -160,23 +160,23 @@ const NPKCard = ({
   color: string;
   bar: string;
 }) => (
-  <div className="bg-gray-50 rounded-2xl p-8 shadow-md hover:shadow-xl transition duration-300">
-    <div className="flex items-center justify-between mb-6">
-      <div className={`p-4 rounded-xl ${bg} ${color}`}>
+  <div className="bg-gray-50 hover:bg-gray-100 rounded-lg sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-md hover:shadow-lg transition duration-300">
+    <div className="flex items-center justify-between mb-4 md:mb-6">
+      <div className={`p-2 sm:p-3 md:p-4 rounded-lg sm:rounded-xl ${bg} ${color}`}>
         {icon}
       </div>
-      <span className="text-sm font-semibold text-gray-500">
+      <span className="text-xs sm:text-sm font-semibold text-gray-500">
         {value} mg/kg
       </span>
     </div>
 
-    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+    <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-800 mb-3 md:mb-4">
       {title}
     </h3>
 
-    <div className="w-full bg-gray-200 h-3 rounded-full">
+    <div className="w-full bg-gray-200 h-2 sm:h-3 rounded-full">
       <div
-        className={`h-3 rounded-full ${bar}`}
+        className={`h-2 sm:h-3 rounded-full ${bar}`}
         style={{ width: `${Math.min(value, 100)}%` }}
       />
     </div>

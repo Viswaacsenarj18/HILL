@@ -16,6 +16,7 @@ import {
   Gauge,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getApiUrl } from '../config/api';
 
 interface TractorData {
   _id: string;
@@ -54,7 +55,7 @@ const RentTractor = () => {
   const fetchTractor = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/tractors/${id}`);
+      const response = await fetch(getApiUrl(`/api/tractors/${id}`));
       if (!response.ok) throw new Error('Tractor not found');
       const data = await response.json();
       setTractor(data);
@@ -92,7 +93,7 @@ const RentTractor = () => {
     setIsConfirming(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/tractors/confirm-rental', {
+      const response = await fetch(getApiUrl('/api/tractors/confirm-rental'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,25 +128,25 @@ const RentTractor = () => {
   };
 
   return (
-    <div className="page-container">
+    <div className="page-container py-4 md:py-6">
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        className="flex items-center gap-1 sm:gap-2 text-muted-foreground hover:text-foreground mb-4 md:mb-6 transition-colors text-xs sm:text-sm md:text-base"
       >
-        <ChevronLeft className="h-5 w-5" />
+        <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
         <span>{t("backToListing")}</span>
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
         {/* Tractor Details */}
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           {/* Image */}
-          <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 aspect-video flex items-center justify-center">
-            <Tractor className="h-24 w-24 text-primary/40" />
+          <div className="relative rounded-lg sm:rounded-xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 aspect-video flex items-center justify-center">
+            <Tractor className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 text-primary/40" />
             {tractor && (
               <span
-                className={`absolute top-4 right-4 status-badge ${
+                className={`absolute top-3 sm:top-4 right-3 sm:right-4 status-badge text-xs sm:text-sm md:text-base ${
                   tractor.isAvailable ? 'status-badge-available' : 'status-badge-rented'
                 }`}
               >
@@ -161,25 +162,25 @@ const RentTractor = () => {
 
           {/* Basic Info */}
           {tractor && (
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h1 className="font-display text-2xl font-bold text-foreground mb-2">
+          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8">
+            <h1 className="font-display text-lg sm:text-2xl md:text-3xl font-bold text-foreground mb-1 md:mb-2">
               {tractor.model}
             </h1>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-muted-foreground mb-3 md:mb-4 text-xs sm:text-sm md:text-base">
               {t("registration")}: {tractor.tractorNumber}
             </p>
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-foreground">
-                <User className="h-5 w-5 text-primary" />
+            <div className="space-y-2 md:space-y-3">
+              <div className="flex items-center gap-2 sm:gap-3 text-foreground text-xs sm:text-sm md:text-base">
+                <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 <span>{tractor.ownerName}</span>
               </div>
-              <div className="flex items-center gap-3 text-foreground">
-                <Phone className="h-5 w-5 text-primary" />
+              <div className="flex items-center gap-2 sm:gap-3 text-foreground text-xs sm:text-sm md:text-base">
+                <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 <span>{tractor.phone}</span>
               </div>
-              <div className="flex items-center gap-3 text-foreground">
-                <MapPin className="h-5 w-5 text-primary" />
+              <div className="flex items-center gap-2 sm:gap-3 text-foreground text-xs sm:text-sm md:text-base">
+                <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 <span>{tractor.location}</span>
               </div>
             </div>
@@ -188,25 +189,25 @@ const RentTractor = () => {
 
           {/* Specifications */}
           {tractor && (
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h3 className="font-display text-lg font-semibold text-foreground mb-4">
+          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8">
+            <h3 className="font-display text-base sm:text-lg md:text-xl font-semibold text-foreground mb-3 md:mb-4">
               {t("specifications")}
             </h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                <Gauge className="h-5 w-5 text-secondary" />
+            <div className="grid grid-cols-2 gap-2 md:gap-4">
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 md:p-4 rounded-lg bg-muted/50">
+                <Gauge className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
                 <div>
                   <p className="text-xs text-muted-foreground">Power</p>
-                  <p className="font-medium text-foreground">
+                  <p className="font-medium text-sm sm:text-base text-foreground">
                     {tractor.horsepower} HP
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                <Fuel className="h-5 w-5 text-secondary" />
+              <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 md:p-4 rounded-lg bg-muted/50">
+                <Fuel className="h-4 w-4 sm:h-5 sm:w-5 text-secondary" />
                 <div>
                   <p className="text-xs text-muted-foreground">Fuel</p>
-                  <p className="font-medium text-foreground">
+                  <p className="font-medium text-sm sm:text-base text-foreground">
                     {tractor.fuelType}
                   </p>
                 </div>
@@ -218,27 +219,27 @@ const RentTractor = () => {
 
         {/* Booking Form */}
         {tractor && (
-        <div className="space-y-6">
-          <div className="bg-card rounded-xl border border-border p-6 sticky top-24">
-            <h3 className="font-display text-xl font-semibold text-foreground mb-6">
+        <div className="space-y-4 md:space-y-6">
+          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8 lg:sticky lg:top-24">
+            <h3 className="font-display text-lg sm:text-xl md:text-2xl font-semibold text-foreground mb-4 md:mb-6">
               {t("confirmRental")}
             </h3>
 
             {/* Rental Type Toggle */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-foreground mb-3">
+            <div className="mb-4 md:mb-6">
+              <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-2 md:mb-3">
                 {t("rentalDetails")}
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
                 <button
                   onClick={() => setRentalType('hourly')}
-                  className={`p-4 rounded-lg border text-center transition-all ${
+                  className={`p-3 sm:p-4 md:p-5 rounded-lg border text-center transition-all text-xs sm:text-sm md:text-base ${
                     rentalType === 'hourly'
                       ? 'border-primary bg-primary/10'
                       : 'border-border hover:border-primary/50'
                   }`}
                 >
-                  <Clock className={`h-5 w-5 mx-auto mb-2 ${
+                  <Clock className={`h-4 w-4 sm:h-5 sm:w-5 mx-auto mb-1 md:mb-2 ${
                     rentalType === 'hourly' ? 'text-primary' : 'text-muted-foreground'
                   }`} />
                   <p className={`font-semibold ${
@@ -246,20 +247,20 @@ const RentTractor = () => {
                   }`}>
                     {t("hourly")}
                   </p>
-                  <div className="flex items-center justify-center text-sm text-muted-foreground">
+                  <div className="flex items-center justify-center text-xs text-muted-foreground">
                     <IndianRupee className="h-3 w-3" />
                     <span>{tractor.rentPerHour}{t("perHour")}</span>
                   </div>
                 </button>
                 <button
                   onClick={() => setRentalType('daily')}
-                  className={`p-4 rounded-lg border text-center transition-all ${
+                  className={`p-3 sm:p-4 md:p-5 rounded-lg border text-center transition-all text-xs sm:text-sm md:text-base ${
                     rentalType === 'daily'
                       ? 'border-primary bg-primary/10'
                       : 'border-border hover:border-primary/50'
                   }`}
                 >
-                  <Calendar className={`h-5 w-5 mx-auto mb-2 ${
+                  <Calendar className={`h-4 w-4 sm:h-5 sm:w-5 mx-auto mb-1 md:mb-2 ${
                     rentalType === 'daily' ? 'text-primary' : 'text-muted-foreground'
                   }`} />
                   <p className={`font-semibold ${
@@ -267,7 +268,7 @@ const RentTractor = () => {
                   }`}>
                     {t("daily")}
                   </p>
-                  <div className="flex items-center justify-center text-sm text-muted-foreground">
+                  <div className="flex items-center justify-center text-xs text-muted-foreground">
                     <IndianRupee className="h-3 w-3" />
                     <span>{tractor.rentPerDay}{t("perDay")}</span>
                   </div>
@@ -276,28 +277,28 @@ const RentTractor = () => {
             </div>
 
             {/* Duration */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-foreground mb-3">
+            <div className="mb-4 md:mb-6">
+              <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-2 md:mb-3">
                 {t("duration")} ({rentalType === 'hourly' ? t("hourly").toLowerCase() : t("daily").toLowerCase()})
               </label>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 md:gap-4">
                 <button
                   onClick={() => setDuration(Math.max(1, duration - 1))}
-                  className="h-12 w-12 rounded-lg border border-border flex items-center justify-center text-xl font-semibold hover:bg-muted transition-colors"
+                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg border border-border flex items-center justify-center text-lg sm:text-xl font-semibold hover:bg-muted transition-colors text-xs md:text-base"
                 >
                   −
                 </button>
                 <div className="flex-1 text-center">
-                  <span className="font-display text-3xl font-bold text-foreground">
+                  <span className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
                     {duration}
                   </span>
-                  <span className="text-muted-foreground ml-2">
+                  <span className="text-muted-foreground ml-2 text-xs sm:text-sm md:text-base">
                     {rentalType === 'hourly' ? t("hours") : t("days")}
                   </span>
                 </div>
                 <button
                   onClick={() => setDuration(duration + 1)}
-                  className="h-12 w-12 rounded-lg border border-border flex items-center justify-center text-xl font-semibold hover:bg-muted transition-colors"
+                  className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg border border-border flex items-center justify-center text-lg sm:text-xl font-semibold hover:bg-muted transition-colors text-xs md:text-base"
                 >
                   +
                 </button>
@@ -305,9 +306,9 @@ const RentTractor = () => {
             </div>
 
             {/* Date & Time */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-4 mb-4 md:mb-6">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("startDate")}
                 </label>
                 <input
@@ -316,11 +317,11 @@ const RentTractor = () => {
                   onChange={(e) => setStartDate(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
                   placeholder={t("startDate")}
-                  className="input-field"
+                  className="input-field text-xs sm:text-sm md:text-base"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("startTime")}
                 </label>
                 <input
@@ -328,15 +329,15 @@ const RentTractor = () => {
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                   placeholder={t("startTime")}
-                  className="input-field"
+                  className="input-field text-xs sm:text-sm md:text-base"
                 />
               </div>
             </div>
 
             {/* Renter Details */}
-            <div className="grid grid-cols-1 gap-4 mb-6">
+            <div className="grid grid-cols-1 gap-2 md:gap-4 mb-4 md:mb-6">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("renterName")}*
                 </label>
                 <input
@@ -344,11 +345,11 @@ const RentTractor = () => {
                   value={renterName}
                   onChange={(e) => setRenterName(e.target.value)}
                   placeholder={t("enterFullNamePhone")}
-                  className="input-field"
+                  className="input-field text-xs sm:text-sm md:text-base"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("renterEmail")} *
                 </label>
                 <input
@@ -356,33 +357,33 @@ const RentTractor = () => {
                   value={renterEmail}
                   onChange={(e) => setRenterEmail(e.target.value)}
                   placeholder={t("enterYourEmail")}
-                  className="input-field"
+                  className="input-field text-xs sm:text-sm md:text-base"
                 />
               </div>
             </div>
 
             {/* Cost Summary */}
-            <div className="bg-muted/50 rounded-lg p-4 mb-6">
-              <div className="flex justify-between items-center mb-2">
+            <div className="bg-muted/50 rounded-lg p-3 sm:p-4 md:p-5 mb-4 md:mb-6">
+              <div className="flex justify-between items-center mb-1.5 md:mb-2 text-xs sm:text-sm md:text-base">
                 <span className="text-muted-foreground">
                   {rentalType === 'hourly' ? t("hourly") : t("daily")}
                 </span>
                 <div className="flex items-center font-medium">
-                  <IndianRupee className="h-4 w-4" />
+                  <IndianRupee className="h-3 w-3 sm:h-4 sm:w-4" />
                   {rentalType === 'hourly' ? tractor.rentPerHour : tractor.rentPerDay}
                 </div>
               </div>
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex justify-between items-center mb-1.5 md:mb-2 text-xs sm:text-sm md:text-base">
                 <span className="text-muted-foreground">{t("duration")}</span>
                 <span className="font-medium">
                   {duration} {rentalType === 'hourly' ? 'hour(s)' : 'day(s)'}
                 </span>
               </div>
-              <div className="border-t border-border pt-2 mt-2">
+              <div className="border-t border-border pt-1.5 md:pt-2 mt-1.5 md:mt-2">
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold text-foreground">{t("totalCost")}</span>
-                  <div className="flex items-center text-xl font-bold text-primary">
-                    <IndianRupee className="h-5 w-5" />
+                  <span className="font-semibold text-foreground text-xs sm:text-sm md:text-base">{t("totalCost")}</span>
+                  <div className="flex items-center text-lg sm:text-xl md:text-2xl font-bold text-primary">
+                    <IndianRupee className="h-5 w-5 sm:h-6 sm:w-6" />
                     {totalCost.toLocaleString()}
                   </div>
                 </div>
@@ -393,7 +394,7 @@ const RentTractor = () => {
             <button
               onClick={handleConfirmRent}
               disabled={isConfirming || !tractor.isAvailable}
-              className={`w-full py-4 rounded-lg font-semibold transition-all ${
+              className={`w-full py-3 sm:py-4 md:py-5 rounded-lg font-semibold transition-all text-sm sm:text-base md:text-lg ${
                 tractor.isAvailable
                   ? 'btn-primary'
                   : 'bg-muted text-muted-foreground cursor-not-allowed'
@@ -401,12 +402,12 @@ const RentTractor = () => {
             >
               {isConfirming ? (
                 <span className="flex items-center justify-center gap-2">
-                  <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                  <span className="h-4 w-4 sm:h-5 sm:w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                   {t("pleaseWait")}...
                 </span>
               ) : tractor.isAvailable ? (
                 <span className="flex items-center justify-center gap-2">
-                  <CheckCircle className="h-5 w-5" />
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                   {t("confirmRental")}
                 </span>
               ) : (
@@ -414,7 +415,7 @@ const RentTractor = () => {
               )}
             </button>
 
-            <p className="text-xs text-center text-muted-foreground mt-4">
+            <p className="text-xs text-center text-muted-foreground mt-2 md:mt-3">
               By confirming, you agree to our rental terms and conditions
             </p>
           </div>

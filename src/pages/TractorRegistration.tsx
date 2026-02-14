@@ -16,6 +16,7 @@ import {
   Fuel,
 } from "lucide-react";
 import { toast } from "sonner";
+import { getApiUrl } from "../config/api";
 
 interface FormData {
   ownerName: string;
@@ -99,7 +100,7 @@ const TractorRegistration = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/tractors/register",
+        getApiUrl('/api/tractors/register'),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -149,45 +150,45 @@ const TractorRegistration = () => {
   };
 
   return (
-    <div className="page-container">
-      <div className="mb-8">
-        <h1 className="section-title flex items-center gap-3">
-          <UserPlus className="h-8 w-8 text-primary" />
+    <div className="page-container py-4 md:py-6">
+      <div className="mb-6 md:mb-8">
+        <h1 className="section-title flex items-center gap-2 sm:gap-3 text-2xl sm:text-3xl md:text-4xl">
+          <UserPlus className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary" />
           {t("registerTractorTitle")}
         </h1>
-        <p className="text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-1 text-xs sm:text-sm md:text-base">
           {t("registerTractorDesc")}
         </p>
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
           {/* Owner Details Section */}
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h3 className="font-display text-lg font-semibold text-foreground mb-4">
+          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8">
+            <h3 className="font-display text-base sm:text-lg md:text-xl font-semibold text-foreground mb-3 md:mb-4">
               {t("tractorRegistration")}
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {/* Owner Name */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("ownerName")} *
                 </label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <User className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="text"
                     value={formData.ownerName}
                     onChange={(e) => handleInputChange('ownerName', e.target.value)}
                     placeholder={t("enterYourFullName")}
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.ownerName ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.ownerName && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.ownerName}
                   </p>
                 )}
@@ -195,24 +196,24 @@ const TractorRegistration = () => {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("email")} *
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Mail className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     placeholder={t("exampleEmail")}
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.email ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.email}
                   </p>
                 )}
@@ -220,24 +221,24 @@ const TractorRegistration = () => {
 
               {/* Phone Number */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("phoneNumber")} *
                 </label>
                 <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Phone className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     placeholder={t("examplePhone")}
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.phone ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.phone && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.phone}
                   </p>
                 )}
@@ -245,24 +246,24 @@ const TractorRegistration = () => {
 
               {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("location")} *
                 </label>
                 <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <MapPin className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="text"
                     value={formData.location}
                     onChange={(e) => handleInputChange('location', e.target.value)}
                     placeholder={t("cityState")}
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.location ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.location && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.location}
                   </p>
                 )}
@@ -271,31 +272,31 @@ const TractorRegistration = () => {
           </div>
 
           {/* Tractor Details Section */}
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h3 className="font-display text-lg font-semibold text-foreground mb-4">
+          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8">
+            <h3 className="font-display text-base sm:text-lg md:text-xl font-semibold text-foreground mb-3 md:mb-4">
               {t("tractorDetails")}
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {/* Tractor Model */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("tractorModel")} *
                 </label>
                 <div className="relative">
-                  <Tractor className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Tractor className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="text"
                     value={formData.model}
                     onChange={(e) => handleInputChange('model', e.target.value)}
                     placeholder={t("exampleModel")}
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.model ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.model && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.model}
                   </p>
                 )}
@@ -303,24 +304,24 @@ const TractorRegistration = () => {
 
               {/* Tractor Number */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("tractorNumber")} *
                 </label>
                 <div className="relative">
-                  <Hash className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Hash className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="text"
                     value={formData.tractorNumber}
                     onChange={(e) => handleInputChange('tractorNumber', e.target.value)}
                     placeholder={t("exampleTractorNumber")}
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.tractorNumber ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.tractorNumber && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.tractorNumber}
                   </p>
                 )}
@@ -328,25 +329,25 @@ const TractorRegistration = () => {
 
               {/* Horsepower */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("horsepower")} (HP) *
                 </label>
                 <div className="relative">
-                  <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Gauge className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="number"
                     value={formData.horsepower}
                     onChange={(e) => handleInputChange('horsepower', e.target.value)}
                     placeholder={t("exampleHorsepower")}
                     min="0"
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.horsepower ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.horsepower && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.horsepower}
                   </p>
                 )}
@@ -354,15 +355,15 @@ const TractorRegistration = () => {
 
               {/* Fuel Type */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("fuelType")} *
                 </label>
                 <div className="relative">
-                  <Fuel className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Fuel className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <select
                     value={formData.fuelType}
                     onChange={(e) => handleInputChange('fuelType', e.target.value)}
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.fuelType ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   >
@@ -372,8 +373,8 @@ const TractorRegistration = () => {
                   </select>
                 </div>
                 {errors.fuelType && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.fuelType}
                   </p>
                 )}
@@ -382,32 +383,32 @@ const TractorRegistration = () => {
           </div>
 
           {/* Pricing Section */}
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h3 className="font-display text-lg font-semibold text-foreground mb-4">
+          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8">
+            <h3 className="font-display text-base sm:text-lg md:text-xl font-semibold text-foreground mb-3 md:mb-4">
               {t("tractorRental")}
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               {/* Rent Per Hour */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("rentPerHour")} (₹) *
                 </label>
                 <div className="relative">
-                  <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <IndianRupee className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="number"
                     value={formData.rentPerHour}
                     onChange={(e) => handleInputChange('rentPerHour', e.target.value)}
                     placeholder={t("exampleRentHour")}
                     min="0"
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.rentPerHour ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.rentPerHour && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.rentPerHour}
                   </p>
                 )}
@@ -415,25 +416,25 @@ const TractorRegistration = () => {
 
               {/* Rent Per Day */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
                   {t("rentPerDay")} (₹) *
                 </label>
                 <div className="relative">
-                  <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <IndianRupee className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <input
                     type="number"
                     value={formData.rentPerDay}
                     onChange={(e) => handleInputChange('rentPerDay', e.target.value)}
                     placeholder={t("exampleRentDay")}
                     min="0"
-                    className={`input-field pl-12 ${
+                    className={`input-field pl-10 sm:pl-12 text-xs sm:text-sm md:text-base ${
                       errors.rentPerDay ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   />
                 </div>
                 {errors.rentPerDay && (
-                  <p className="text-sm text-danger mt-1 flex items-center gap-1">
-                    <AlertCircle className="h-4 w-4" />
+                  <p className="text-xs sm:text-sm text-danger mt-1 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                     {errors.rentPerDay}
                   </p>
                 )}
@@ -442,24 +443,24 @@ const TractorRegistration = () => {
           </div>
 
           {/* Availability Toggle */}
-          <div className="bg-card rounded-xl border border-border p-6">
+          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-foreground">{t("availabilityStatus")}</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold text-sm sm:text-base md:text-lg text-foreground">{t("availabilityStatus")}</h3>
+                <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
                   {t("setAvailable")}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => handleInputChange('isAvailable', !formData.isAvailable)}
-                className={`relative w-14 h-7 rounded-full transition-colors ${
+                className={`relative w-12 sm:w-14 h-6 sm:h-7 rounded-full transition-colors ${
                   formData.isAvailable ? 'bg-success' : 'bg-muted'
                 }`}
               >
                 <span
-                  className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-md transition-all ${
-                    formData.isAvailable ? 'left-7' : 'left-0.5'
+                  className={`absolute top-0.5 h-5 sm:h-6 w-5 sm:w-6 rounded-full bg-white shadow-md transition-all ${
+                    formData.isAvailable ? 'left-6 sm:left-7' : 'left-0.5'
                   }`}
                 />
               </button>
@@ -470,16 +471,16 @@ const TractorRegistration = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full btn-primary py-4 text-lg"
+            className="w-full btn-primary py-2.5 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg"
           >
             {isSubmitting ? (
-              <span className="flex items-center gap-2">
-                <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+              <span className="flex items-center justify-center gap-2">
+                <span className="h-4 w-4 sm:h-5 sm:w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                 {t("registering")}
               </span>
             ) : (
-              <span className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5" />
+              <span className="flex items-center justify-center gap-2">
+                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
                 {t("registerTractor")}
               </span>
             )}
