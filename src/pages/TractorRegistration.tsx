@@ -38,7 +38,8 @@ interface FormErrors {
 
 const TractorRegistration = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ta';
 
   const [formData, setFormData] = useState<FormData>({
     ownerName: "",
@@ -150,9 +151,15 @@ const TractorRegistration = () => {
   };
 
   return (
-    <div className="page-container py-4 md:py-6">
+    <div 
+      className="page-container py-4 md:py-6"
+      style={{ 
+        direction: isRTL ? 'rtl' : 'ltr',
+        textAlign: isRTL ? 'right' : 'left'
+      }}
+    >
       <div className="mb-6 md:mb-8">
-        <h1 className="section-title flex items-center gap-2 sm:gap-3 text-2xl sm:text-3xl md:text-4xl">
+        <h1 className="section-title flex items-center gap-2 sm:gap-3 text-2xl sm:text-3xl md:text-4xl" style={{ flexDirection: isRTL ? 'row-reverse' : 'row' }}>
           <UserPlus className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary" />
           {t("registerTractorTitle")}
         </h1>
@@ -162,16 +169,16 @@ const TractorRegistration = () => {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6" style={{ direction: isRTL ? 'rtl' : 'ltr' }}>
           {/* Owner Details Section */}
-          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8">
+          <div className="bg-card rounded-lg sm:rounded-xl border border-border p-4 sm:p-6 md:p-8" style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
             <h3 className="font-display text-base sm:text-lg md:text-xl font-semibold text-foreground mb-3 md:mb-4">
               {t("tractorRegistration")}
             </h3>
             <div className="space-y-3 md:space-y-4">
               {/* Owner Name */}
               <div>
-                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium text-foreground mb-1.5 md:mb-2" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                   {t("ownerName")} *
                 </label>
                 <div className="relative">

@@ -65,7 +65,7 @@ const Navbar = () => {
             </NavLink>
 
             {/* Navigation */}
-            <div className="flex items-center gap-4 relative">
+            <div className="flex items-center gap-4 relative"  style={{ direction: i18n.language === 'ta' ? 'rtl' : 'ltr' }}>
 
               {navItems.map((item) => (
                 <NavLink
@@ -78,6 +78,7 @@ const Navbar = () => {
                         : "hover:bg-muted"
                     }`
                   }
+                  style={{ textAlign: i18n.language === 'ta' ? 'right' : 'left' }}
                 >
                   <item.icon className="h-4 w-4" />
                   <span>{item.label}</span>
@@ -89,6 +90,7 @@ const Navbar = () => {
                 <button
                   onClick={() => setIsLangOpen(!isLangOpen)}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted"
+                  style={{ direction: i18n.language === 'ta' ? 'rtl' : 'ltr' }}
                 >
                   <Globe className="h-4 w-4" />
                   <span className="text-sm font-medium">
@@ -98,16 +100,17 @@ const Navbar = () => {
                 </button>
 
                 {isLangOpen && (
-                  <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-xl border z-50">
+                  <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-xl border z-50" style={{ direction: i18n.language === 'ta' ? 'rtl' : 'ltr', textAlign: i18n.language === 'ta' ? 'right' : 'left' }}>
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
                         onClick={() => changeLanguage(lang.code)}
-                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted rounded-lg ${
+                        className={`w-full px-4 py-2 text-sm hover:bg-muted rounded-lg ${
                           i18n.language === lang.code
                             ? "bg-primary/10 text-primary font-medium"
                             : ""
                         }`}
+                        style={{ textAlign: i18n.language === 'ta' ? 'right' : 'left' }}
                       >
                         {lang.label}
                       </button>
