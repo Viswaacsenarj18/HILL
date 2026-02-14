@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import TractorCard from '@/components/tractors/TractorCard';
 import { Tractor, Search, Filter, MapPin } from 'lucide-react';
 
 const TractorListing = () => {
+  const { t } = useTranslation();
   const [tractors, setTractors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -46,10 +48,10 @@ const TractorListing = () => {
       <div className="mb-8">
         <h1 className="section-title flex items-center gap-3">
           <Tractor className="h-8 w-8 text-primary" />
-          Rent a Tractor
+          {t("rentATractor")}
         </h1>
         <p className="text-muted-foreground mt-1">
-          Find and rent tractors from local farmers in your area
+          {t("findAndRent")}
         </p>
       </div>
 
@@ -59,7 +61,7 @@ const TractorListing = () => {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search by model, location, or owner..."
+            placeholder={t("searchByModel")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="input-field pl-12"
@@ -74,7 +76,7 @@ const TractorListing = () => {
           }`}
         >
           <Filter className="h-4 w-4" />
-          <span className="font-medium">Available Only</span>
+          <span className="font-medium">{t("availableOnly")}</span>
         </button>
       </div>
 
@@ -82,15 +84,15 @@ const TractorListing = () => {
       <div className="flex flex-wrap gap-4 mb-6">
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border">
           <Tractor className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium">{tractors.length} Total Tractors</span>
+          <span className="text-sm font-medium">{tractors.length} {t("totalTractors")}</span>
         </div>
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border border-success/20">
           <div className="h-2 w-2 rounded-full bg-success" />
-          <span className="text-sm font-medium text-success">{availableCount} Available</span>
+          <span className="text-sm font-medium text-success">{availableCount} {t("available")}</span>
         </div>
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border">
           <MapPin className="h-4 w-4 text-secondary" />
-          <span className="text-sm font-medium">Multiple Locations</span>
+          <span className="text-sm font-medium">{t("multipleLocations")}</span>
         </div>
       </div>
 
@@ -98,18 +100,18 @@ const TractorListing = () => {
       {loading ? (
         <div className="text-center py-16">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-2 border-primary border-t-transparent"></div>
-          <p className="mt-4 text-muted-foreground">Loading tractors...</p>
+          <p className="mt-4 text-muted-foreground">{t("loadingTractors")}</p>
         </div>
       ) : error ? (
         <div className="text-center py-16">
           <Tractor className="h-16 w-16 text-danger/30 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-danger mb-2">Error Loading Tractors</h3>
+          <h3 className="text-lg font-semibold text-danger mb-2">{t("errorLoadingTractors")}</h3>
           <p className="text-muted-foreground">{error}</p>
           <button
             onClick={fetchTractors}
             className="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
           >
-            Try Again
+            {t("tryAgain")}
           </button>
         </div>
       ) : filteredTractors.length > 0 ? (
@@ -127,9 +129,9 @@ const TractorListing = () => {
       ) : (
         <div className="text-center py-16">
           <Tractor className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-foreground mb-2">No tractors found</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-2">{t("noTractorsFound")}</h3>
           <p className="text-muted-foreground">
-            Try adjusting your search or filter criteria
+            {t("tryAdjustingSearch")}
           </p>
         </div>
       )}
@@ -137,13 +139,13 @@ const TractorListing = () => {
       {/* CTA Section */}
       <div className="mt-12 p-6 rounded-xl bg-gradient-to-r from-secondary/10 to-accent/10 border border-secondary/20 text-center">
         <h3 className="font-display text-xl font-semibold text-foreground mb-2">
-          Own a Tractor?
+          {t("ownATractor")}
         </h3>
         <p className="text-muted-foreground mb-4">
-          Register your tractor and start earning by renting it to farmers in your area
+          {t("registerYourTractor")}
         </p>
         <a href="/register" className="btn-secondary">
-          Register Your Tractor
+          {t("registerYourTractorBtn")}
         </a>
       </div>
     </div>

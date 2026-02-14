@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Tractor,
   User,
@@ -34,6 +35,7 @@ interface TractorData {
 const RentTractor = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [tractor, setTractor] = useState<TractorData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +60,7 @@ const RentTractor = () => {
       setTractor(data);
     } catch (err) {
       console.error(err);
-      toast.error('Failed to load tractor details');
+      toast.error(t("errorLoadingData"));
     } finally {
       setLoading(false);
     }
@@ -73,17 +75,17 @@ const RentTractor = () => {
 
   const handleConfirmRent = async () => {
     if (!startDate) {
-      toast.error('Please select a start date');
+      toast.error(t("selectStartDate"));
       return;
     }
 
     if (!renterName.trim()) {
-      toast.error('Please enter your name');
+      toast.error(t("enterName"));
       return;
     }
 
     if (!renterEmail.trim()) {
-      toast.error('Please enter your email');
+      toast.error(t("enterEmail"));
       return;
     }
 
@@ -109,16 +111,16 @@ const RentTractor = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('✅ Rental confirmed! Confirmation emails sent.');
+        toast.success(t("rentalConfirmed"));
         setTimeout(() => {
           navigate('/tractors');
         }, 2000);
       } else {
-        toast.error(data.message || 'Failed to confirm rental');
+        toast.error(data.message || t("failedToConfirmRental"));
       }
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Error confirming rental. Please try again.');
+      toast.error(t("errorConfirmingRental"));
     } finally {
       setIsConfirming(false);
     }
@@ -132,7 +134,7 @@ const RentTractor = () => {
         className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
       >
         <ChevronLeft className="h-5 w-5" />
-        <span>Back to listing</span>
+        <span>{t("backToListing")}</span>
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -152,7 +154,7 @@ const RentTractor = () => {
                     tractor.isAvailable ? 'bg-success' : 'bg-danger'
                   }`}
                 />
-                {tractor.isAvailable ? 'Available' : 'Rented'}
+                {tractor.isAvailable ? t("available") : t("available")}
               </span>
             )}
           </div>
@@ -164,7 +166,7 @@ const RentTractor = () => {
               {tractor.model}
             </h1>
             <p className="text-muted-foreground mb-4">
-              Registration: {tractor.tractorNumber}
+              {t("registration")}: {tractor.tractorNumber}
             </p>
 
             <div className="space-y-3">
@@ -188,7 +190,7 @@ const RentTractor = () => {
           {tractor && (
           <div className="bg-card rounded-xl border border-border p-6">
             <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-              Specifications
+              {t("specifications")}
             </h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
@@ -219,13 +221,13 @@ const RentTractor = () => {
         <div className="space-y-6">
           <div className="bg-card rounded-xl border border-border p-6 sticky top-24">
             <h3 className="font-display text-xl font-semibold text-foreground mb-6">
-              Book This Tractor
+              {t("confirmRental")}
             </h3>
 
             {/* Rental Type Toggle */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-foreground mb-3">
-                Rental Type
+                {t("rentalDetails")}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -242,11 +244,11 @@ const RentTractor = () => {
                   <p className={`font-semibold ${
                     rentalType === 'hourly' ? 'text-primary' : 'text-foreground'
                   }`}>
-                    Hourly
+                    {t("hourly")}
                   </p>
                   <div className="flex items-center justify-center text-sm text-muted-foreground">
                     <IndianRupee className="h-3 w-3" />
-                    <span>{tractor.rentPerHour}/hr</span>
+                    <span>{tractor.rentPerHour}{t("perHour")}</span>
                   </div>
                 </button>
                 <button
@@ -263,11 +265,11 @@ const RentTractor = () => {
                   <p className={`font-semibold ${
                     rentalType === 'daily' ? 'text-primary' : 'text-foreground'
                   }`}>
-                    Daily
+                    {t("daily")}
                   </p>
                   <div className="flex items-center justify-center text-sm text-muted-foreground">
                     <IndianRupee className="h-3 w-3" />
-                    <span>{tractor.rentPerDay}/day</span>
+                    <span>{tractor.rentPerDay}{t("perDay")}</span>
                   </div>
                 </button>
               </div>
@@ -276,7 +278,7 @@ const RentTractor = () => {
             {/* Duration */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-foreground mb-3">
-                Duration ({rentalType === 'hourly' ? 'Hours' : 'Days'})
+                {t("duration")} ({rentalType === 'hourly' ? t("hourly").toLowerCase() : t("daily").toLowerCase()})
               </label>
               <div className="flex items-center gap-4">
                 <button
@@ -290,7 +292,7 @@ const RentTractor = () => {
                     {duration}
                   </span>
                   <span className="text-muted-foreground ml-2">
-                    {rentalType === 'hourly' ? 'hour(s)' : 'day(s)'}
+                    {rentalType === 'hourly' ? t("hours") : t("days")}
                   </span>
                 </div>
                 <button
@@ -306,24 +308,26 @@ const RentTractor = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Start Date
+                  {t("startDate")}
                 </label>
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
+                  placeholder={t("startDate")}
                   className="input-field"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Start Time
+                  {t("startTime")}
                 </label>
                 <input
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
+                  placeholder={t("startTime")}
                   className="input-field"
                 />
               </div>
@@ -333,25 +337,25 @@ const RentTractor = () => {
             <div className="grid grid-cols-1 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Your Name & Phone number*
+                  {t("renterName")}*
                 </label>
                 <input
                   type="text"
                   value={renterName}
                   onChange={(e) => setRenterName(e.target.value)}
-                  placeholder="Enter your full name & Phone numberl"
+                  placeholder={t("enterFullNamePhone")}
                   className="input-field"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Your Email *
+                  {t("renterEmail")} *
                 </label>
                 <input
                   type="email"
                   value={renterEmail}
                   onChange={(e) => setRenterEmail(e.target.value)}
-                  placeholder="Enter your email"
+                  placeholder={t("enterYourEmail")}
                   className="input-field"
                 />
               </div>
@@ -361,7 +365,7 @@ const RentTractor = () => {
             <div className="bg-muted/50 rounded-lg p-4 mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-muted-foreground">
-                  {rentalType === 'hourly' ? 'Hourly Rate' : 'Daily Rate'}
+                  {rentalType === 'hourly' ? t("hourly") : t("daily")}
                 </span>
                 <div className="flex items-center font-medium">
                   <IndianRupee className="h-4 w-4" />
@@ -369,14 +373,14 @@ const RentTractor = () => {
                 </div>
               </div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-muted-foreground">Duration</span>
+                <span className="text-muted-foreground">{t("duration")}</span>
                 <span className="font-medium">
                   {duration} {rentalType === 'hourly' ? 'hour(s)' : 'day(s)'}
                 </span>
               </div>
               <div className="border-t border-border pt-2 mt-2">
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold text-foreground">Total Cost</span>
+                  <span className="font-semibold text-foreground">{t("totalCost")}</span>
                   <div className="flex items-center text-xl font-bold text-primary">
                     <IndianRupee className="h-5 w-5" />
                     {totalCost.toLocaleString()}
@@ -398,15 +402,15 @@ const RentTractor = () => {
               {isConfirming ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                  Confirming...
+                  {t("pleaseWait")}...
                 </span>
               ) : tractor.isAvailable ? (
                 <span className="flex items-center justify-center gap-2">
                   <CheckCircle className="h-5 w-5" />
-                  Confirm Rental
+                  {t("confirmRental")}
                 </span>
               ) : (
-                'Not Available'
+                t("available")
               )}
             </button>
 

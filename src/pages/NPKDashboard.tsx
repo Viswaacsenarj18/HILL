@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Leaf, FlaskConical, Activity } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 /* ================= TYPES ================= */
 
@@ -18,10 +19,12 @@ const POLLING_INTERVAL = 15000; // ThingSpeak safe interval
 /* ================= COMPONENT ================= */
 
 const NPKDashboard = () => {
+  const { t } = useTranslation();
+
   const [nitrogen, setNitrogen] = useState<number>(0);
   const [phosphorus, setPhosphorus] = useState<number>(0);
   const [potassium, setPotassium] = useState<number>(0);
-  const [recommendedCrop, setRecommendedCrop] = useState<string>("");
+  const [recommendedCropKey, setRecommendedCropKey] = useState<string>("");
 
   useEffect(() => {
     fetchNPK();
@@ -60,44 +63,35 @@ const NPKDashboard = () => {
         setNitrogen(n);
         setPhosphorus(p);
         setPotassium(k);
-        setRecommendedCrop(getCropSuggestion(n, p, k));
+        setRecommendedCropKey(getCropSuggestionKey(n, p, k));
       }
     } catch (error) {
       console.error("NPK Fetch Error:", error);
     }
   };
 
-  /* ================= SMART CROP LOGIC ================= */
+  /* ================= SMART CROP LOGIC (returns translation key) ================= */
 
-  const getCropSuggestion = (n: number, p: number, k: number): string => {
-    if (n >= 70 && k >= 70)
-      return "🍌 Banana (High Nitrogen & Potassium Soil)";
+  const getCropSuggestionKey = (n: number, p: number, k: number): string => {
+    if (n >= 70 && k >= 70) return "rec_banana";
 
-    if (n >= 40 && p >= 30 && k >= 40)
-      return "🌿 Turmeric (Well Balanced Nutrient Soil)";
+    if (n >= 40 && p >= 30 && k >= 40) return "rec_turmeric";
 
-    if (p >= 40 && k >= 40 && n >= 30)
-      return "🧄 Garlic (Good Phosphorus & Potassium Level)";
+    if (p >= 40 && k >= 40 && n >= 30) return "rec_garlic";
 
-    if (n >= 60)
-      return "🌽 Corn (High Nitrogen Soil)";
+    if (n >= 60) return "rec_corn";
 
-    if (n >= 30 && p >= 30 && k >= 30 && n <= 60)
-      return "🫘 Beans (Moderate Fertile Soil)";
+    if (n >= 30 && p >= 30 && k >= 30 && n <= 60) return "rec_beans";
 
-    if (k >= 50 && n >= 30)
-      return "🥕 Beetroot (Potassium Rich Soil)";
+    if (k >= 50 && n >= 30) return "rec_beetroot";
 
-    if (n >= 20 && p >= 20 && k >= 20 && n <= 50)
-      return "🌾 Ragi (Suitable for Moderate Soil)";
+    if (n >= 20 && p >= 20 && k >= 20 && n <= 50) return "rec_ragi";
 
-    if (n >= 15 && p >= 15 && k >= 15)
-      return "🌾 Kambu (Millet – Tolerates Low Nutrient Soil)";
+    if (n >= 15 && p >= 15 && k >= 15) return "rec_kambu";
 
-    if (k >= 60)
-      return "🌱 Tapioca (High Potassium Soil Preferred)";
+    if (k >= 60) return "rec_tapioca";
 
-    return "⚠ Soil Needs Nutrient Improvement";
+    return "rec_soil_needs_improvement";
   };
 
   /* ================= UI ================= */
@@ -105,12 +99,12 @@ const NPKDashboard = () => {
   return (
     <div className="bg-white p-10 rounded-3xl shadow-xl border mt-12">
       <h2 className="text-3xl font-bold text-center text-emerald-700 mb-12">
-        🌿 Smart Soil Nutrient Analysis (Hilly Region)
+        🌿 {t("soilAnalysisHilly")}
       </h2>
 
       <div className="grid md:grid-cols-3 gap-10">
         <NPKCard
-          title="Nitrogen (N)"
+          title={t("nitrogen")}
           value={nitrogen}
           icon={<Leaf size={28} />}
           bg="bg-green-100"
@@ -119,7 +113,7 @@ const NPKDashboard = () => {
         />
 
         <NPKCard
-          title="Phosphorus (P)"
+          title={t("phosphorus")}
           value={phosphorus}
           icon={<FlaskConical size={28} />}
           bg="bg-blue-100"
@@ -128,7 +122,7 @@ const NPKDashboard = () => {
         />
 
         <NPKCard
-          title="Potassium (K)"
+          title={t("potassium")}
           value={potassium}
           icon={<Activity size={28} />}
           bg="bg-orange-100"
@@ -139,10 +133,10 @@ const NPKDashboard = () => {
 
       <div className="mt-14 bg-gradient-to-r from-emerald-100 to-green-200 p-8 rounded-2xl text-center shadow-inner">
         <h3 className="text-xl font-semibold mb-3 text-gray-700">
-          🌾 Recommended Crop
+          🌾 {t("recommendedCrop")}
         </h3>
         <p className="text-2xl font-bold text-emerald-900">
-          {recommendedCrop}
+          {recommendedCropKey ? t(recommendedCropKey) : t("improveSoil")}
         </p>
       </div>
     </div>

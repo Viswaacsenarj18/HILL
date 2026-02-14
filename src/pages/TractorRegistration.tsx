@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   UserPlus,
   User,
@@ -36,6 +37,7 @@ interface FormErrors {
 
 const TractorRegistration = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState<FormData>({
     ownerName: "",
@@ -58,27 +60,27 @@ const TractorRegistration = () => {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.ownerName.trim()) newErrors.ownerName = "Owner name is required";
+    if (!formData.ownerName.trim()) newErrors.ownerName = t("ownerNameRequired");
 
     if (!formData.email.trim())
-      newErrors.email = "Email is required";
+      newErrors.email = t("emailRequired");
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      newErrors.email = "Invalid email address";
+      newErrors.email = t("invalidEmail");
 
-    if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
-    if (!formData.location.trim()) newErrors.location = "Location is required";
-    if (!formData.model.trim()) newErrors.model = "Model is required";
+    if (!formData.phone.trim()) newErrors.phone = t("phoneRequired");
+    if (!formData.location.trim()) newErrors.location = t("locationRequired");
+    if (!formData.model.trim()) newErrors.model = t("modelRequired");
     if (!formData.tractorNumber.trim())
-      newErrors.tractorNumber = "Tractor number is required";
+      newErrors.tractorNumber = t("tractorNumberRequired");
 
     if (!formData.horsepower || Number(formData.horsepower) <= 0)
-      newErrors.horsepower = "Invalid horsepower";
+      newErrors.horsepower = t("invalidHorsepower");
 
     if (!formData.rentPerHour || Number(formData.rentPerHour) <= 0)
-      newErrors.rentPerHour = "Invalid hourly rate";
+      newErrors.rentPerHour = t("invalidHourlyRate");
 
     if (!formData.rentPerDay || Number(formData.rentPerDay) <= 0)
-      newErrors.rentPerDay = "Invalid daily rate";
+      newErrors.rentPerDay = t("invalidDailyRate");
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -89,7 +91,7 @@ const TractorRegistration = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      toast.error("Please fix the errors in the form");
+      toast.error(t("pleaseFixErrors"));
       return;
     }
 
@@ -122,14 +124,14 @@ const TractorRegistration = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
+        throw new Error(data.message || t("registrationFailed"));
       }
 
-      toast.success("🚜 Tractor registered successfully!");
+      toast.success(t("registrationSuccess"));
       navigate("/tractors");
     } catch (error: any) {
       console.error("❌ Error:", error);
-      toast.error(error.message || "Backend not reachable");
+      toast.error(error.message || t("backendNotReachable"));
     } finally {
       setIsSubmitting(false);
     }
@@ -151,10 +153,10 @@ const TractorRegistration = () => {
       <div className="mb-8">
         <h1 className="section-title flex items-center gap-3">
           <UserPlus className="h-8 w-8 text-primary" />
-          Register Your Tractor
+          {t("registerTractorTitle")}
         </h1>
         <p className="text-muted-foreground mt-1">
-          List your tractor for rent and start earning
+          {t("registerTractorDesc")}
         </p>
       </div>
 
@@ -163,13 +165,13 @@ const TractorRegistration = () => {
           {/* Owner Details Section */}
           <div className="bg-card rounded-xl border border-border p-6">
             <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-              Owner Details
+              {t("tractorRegistration")}
             </h3>
             <div className="space-y-4">
               {/* Owner Name */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Owner Name *
+                  {t("ownerName")} *
                 </label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -177,7 +179,7 @@ const TractorRegistration = () => {
                     type="text"
                     value={formData.ownerName}
                     onChange={(e) => handleInputChange('ownerName', e.target.value)}
-                    placeholder="Enter your full name"
+                    placeholder={t("enterYourFullName")}
                     className={`input-field pl-12 ${
                       errors.ownerName ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
@@ -194,7 +196,7 @@ const TractorRegistration = () => {
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Email Address *
+                  {t("email")} *
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -202,7 +204,7 @@ const TractorRegistration = () => {
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
-                    placeholder="your.email@example.com"
+                    placeholder={t("exampleEmail")}
                     className={`input-field pl-12 ${
                       errors.email ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
@@ -219,7 +221,7 @@ const TractorRegistration = () => {
               {/* Phone Number */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Phone Number *
+                  {t("phoneNumber")} *
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -227,7 +229,7 @@ const TractorRegistration = () => {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
-                    placeholder="+91 98765 43210"
+                    placeholder={t("examplePhone")}
                     className={`input-field pl-12 ${
                       errors.phone ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
@@ -244,7 +246,7 @@ const TractorRegistration = () => {
               {/* Location */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Location *
+                  {t("location")} *
                 </label>
                 <div className="relative">
                   <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -252,7 +254,7 @@ const TractorRegistration = () => {
                     type="text"
                     value={formData.location}
                     onChange={(e) => handleInputChange('location', e.target.value)}
-                    placeholder="City, State"
+                    placeholder={t("cityState")}
                     className={`input-field pl-12 ${
                       errors.location ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
@@ -271,13 +273,13 @@ const TractorRegistration = () => {
           {/* Tractor Details Section */}
           <div className="bg-card rounded-xl border border-border p-6">
             <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-              Tractor Details
+              {t("tractorDetails")}
             </h3>
             <div className="space-y-4">
               {/* Tractor Model */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Tractor Model *
+                  {t("tractorModel")} *
                 </label>
                 <div className="relative">
                   <Tractor className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -285,7 +287,7 @@ const TractorRegistration = () => {
                     type="text"
                     value={formData.model}
                     onChange={(e) => handleInputChange('model', e.target.value)}
-                    placeholder="e.g., Mahindra 575 DI"
+                    placeholder={t("exampleModel")}
                     className={`input-field pl-12 ${
                       errors.model ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
@@ -302,7 +304,7 @@ const TractorRegistration = () => {
               {/* Tractor Number */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Tractor Number *
+                  {t("tractorNumber")} *
                 </label>
                 <div className="relative">
                   <Hash className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -310,7 +312,7 @@ const TractorRegistration = () => {
                     type="text"
                     value={formData.tractorNumber}
                     onChange={(e) => handleInputChange('tractorNumber', e.target.value)}
-                    placeholder="e.g., PB-10-AB-1234"
+                    placeholder={t("exampleTractorNumber")}
                     className={`input-field pl-12 ${
                       errors.tractorNumber ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
@@ -327,7 +329,7 @@ const TractorRegistration = () => {
               {/* Horsepower */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Horsepower (HP) *
+                  {t("horsepower")} (HP) *
                 </label>
                 <div className="relative">
                   <Gauge className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -335,7 +337,7 @@ const TractorRegistration = () => {
                     type="number"
                     value={formData.horsepower}
                     onChange={(e) => handleInputChange('horsepower', e.target.value)}
-                    placeholder="e.g., 47"
+                    placeholder={t("exampleHorsepower")}
                     min="0"
                     className={`input-field pl-12 ${
                       errors.horsepower ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
@@ -353,7 +355,7 @@ const TractorRegistration = () => {
               {/* Fuel Type */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Fuel Type *
+                  {t("fuelType")} *
                 </label>
                 <div className="relative">
                   <Fuel className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -364,9 +366,9 @@ const TractorRegistration = () => {
                       errors.fuelType ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
                     }`}
                   >
-                    <option value="Diesel">Diesel</option>
-                    <option value="Petrol">Petrol</option>
-                    <option value="Bio-Diesel">Bio-Diesel</option>
+                    <option value="Diesel">{t("diesel")}</option>
+                    <option value="Petrol">{t("petrol")}</option>
+                    <option value="Bio-Diesel">{t("bioDiesel")}</option>
                   </select>
                 </div>
                 {errors.fuelType && (
@@ -382,13 +384,13 @@ const TractorRegistration = () => {
           {/* Pricing Section */}
           <div className="bg-card rounded-xl border border-border p-6">
             <h3 className="font-display text-lg font-semibold text-foreground mb-4">
-              Pricing
+              {t("tractorRental")}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Rent Per Hour */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Rent per Hour (₹) *
+                  {t("rentPerHour")} (₹) *
                 </label>
                 <div className="relative">
                   <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -396,7 +398,7 @@ const TractorRegistration = () => {
                     type="number"
                     value={formData.rentPerHour}
                     onChange={(e) => handleInputChange('rentPerHour', e.target.value)}
-                    placeholder="500"
+                    placeholder={t("exampleRentHour")}
                     min="0"
                     className={`input-field pl-12 ${
                       errors.rentPerHour ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
@@ -414,7 +416,7 @@ const TractorRegistration = () => {
               {/* Rent Per Day */}
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
-                  Rent per Day (₹) *
+                  {t("rentPerDay")} (₹) *
                 </label>
                 <div className="relative">
                   <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -422,7 +424,7 @@ const TractorRegistration = () => {
                     type="number"
                     value={formData.rentPerDay}
                     onChange={(e) => handleInputChange('rentPerDay', e.target.value)}
-                    placeholder="3500"
+                    placeholder={t("exampleRentDay")}
                     min="0"
                     className={`input-field pl-12 ${
                       errors.rentPerDay ? 'border-danger focus:border-danger focus:ring-danger/20' : ''
@@ -443,9 +445,9 @@ const TractorRegistration = () => {
           <div className="bg-card rounded-xl border border-border p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-foreground">Availability Status</h3>
+                <h3 className="font-semibold text-foreground">{t("availabilityStatus")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Set your tractor as available for rent
+                  {t("setAvailable")}
                 </p>
               </div>
               <button
@@ -473,12 +475,12 @@ const TractorRegistration = () => {
             {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <span className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                Registering...
+                {t("registering")}
               </span>
             ) : (
               <span className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5" />
-                Register Tractor
+                {t("registerTractor")}
               </span>
             )}
           </button>

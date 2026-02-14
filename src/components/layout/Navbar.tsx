@@ -1,26 +1,54 @@
-import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Activity, Tractor, UserPlus, Menu, X } from 'lucide-react';
-import { useState } from 'react';
-import logo from '@/images/logo.jpeg'; // Adjust path if needed
-
-const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/sensors', label: 'Sensors', icon: Activity },
-  { to: '/tractors', label: 'Rent Tractor', icon: Tractor },
-  { to: '/register', label: 'Register', icon: UserPlus },
-];
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Activity,
+  Tractor,
+  UserPlus,
+  Menu,
+  X,
+  Globe,
+  ChevronDown,
+} from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import logo from "@/images/logo.jpeg";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
+
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+
+  /* ================= NAV ITEMS ================= */
+
+  const navItems = [
+    { to: "/", label: t("dashboard"), icon: LayoutDashboard },
+    { to: "/sensors", label: t("sensors"), icon: Activity },
+    { to: "/tractors", label: t("rentTractor"), icon: Tractor },
+    { to: "/register", label: t("register"), icon: UserPlus },
+  ];
+
+  /* ================= LANGUAGE OPTIONS ================= */
+
+  const languages = [
+    { code: "en", label: "English" },
+    { code: "ta", label: "தமிழ்" },
+    { code: "kn", label: "ಕನ್ನಡ" },
+  ];
+
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang);
+    setIsLangOpen(false);
+  };
 
   return (
     <>
-      {/* Desktop Navbar */}
+      {/* ================= DESKTOP NAVBAR ================= */}
       <nav className="sticky top-0 z-50 hidden md:block bg-card/80 backdrop-blur-lg border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6">
           <div className="flex h-16 items-center justify-between">
-            
+
             {/* Logo */}
             <NavLink to="/" className="flex items-center gap-3">
               <img
@@ -29,54 +57,86 @@ const Navbar = () => {
                 className="h-10 w-10 rounded-xl object-cover"
               />
               <div>
-                <h1 className="font-display text-lg font-bold text-foreground">
-                  HillSmart
-                </h1>
+                <h1 className="font-bold text-lg">HillSmart</h1>
                 <p className="text-xs text-muted-foreground">
-                  Smart Farming Platform
+                  {t("smartPlatform")}
                 </p>
               </div>
             </NavLink>
 
-            {/* Navigation Links */}
-            <div className="flex items-center gap-1">
+            {/* Navigation */}
+            <div className="flex items-center gap-4 relative">
+
               {navItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `nav-link rounded-lg flex items-center gap-2 px-4 py-2 ${
-                      isActive ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
+                    `flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "hover:bg-muted"
                     }`
                   }
                 >
                   <item.icon className="h-4 w-4" />
-                  <span className="font-medium">{item.label}</span>
+                  <span>{item.label}</span>
                 </NavLink>
               ))}
+
+              {/* 🌍 Language Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setIsLangOpen(!isLangOpen)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted"
+                >
+                  <Globe className="h-4 w-4" />
+                  <span className="text-sm font-medium">
+                    {i18n.language.toUpperCase()}
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
+                {isLangOpen && (
+                  <div className="absolute right-0 mt-2 w-36 bg-white shadow-lg rounded-xl border z-50">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => changeLanguage(lang.code)}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted rounded-lg ${
+                          i18n.language === lang.code
+                            ? "bg-primary/10 text-primary font-medium"
+                            : ""
+                        }`}
+                      >
+                        {lang.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Top Bar */}
-      <nav className="sticky top-0 z-50 md:hidden bg-card/80 backdrop-blur-lg border-b border-border">
+      {/* ================= MOBILE TOP NAV ================= */}
+      <nav className="sticky top-0 z-50 md:hidden bg-card/90 backdrop-blur-lg border-b border-border">
         <div className="flex h-14 items-center justify-between px-4">
-          
+
           <NavLink to="/" className="flex items-center gap-2">
             <img
               src={logo}
               alt="HillSmart Logo"
               className="h-8 w-8 rounded-lg object-cover"
             />
-            <span className="font-display text-lg font-bold text-foreground">
-              HillSmart
-            </span>
+            <span className="font-bold text-lg">HillSmart</span>
           </NavLink>
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-muted"
+            className="p-2 rounded-lg hover:bg-muted"
           >
             {isMobileMenuOpen ? (
               <X className="h-5 w-5" />
@@ -86,63 +146,52 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Dropdown */}
         {isMobileMenuOpen && (
-          <div className="absolute left-0 right-0 top-14 bg-card border-b border-border shadow-lg animate-fade-in">
-            <div className="p-2">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-4 py-3 ${
-                      isActive
-                        ? 'bg-primary/10 text-primary font-medium'
-                        : 'text-muted-foreground hover:bg-muted'
-                    }`
-                  }
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        )}
-      </nav>
+          <div className="bg-white border-t shadow-lg p-4 space-y-3">
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card/95 backdrop-blur-lg border-t border-border safe-area-inset-bottom">
-        <div className="flex h-16 items-center justify-around px-2">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.to;
-            return (
+            {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
-                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all ${
-                  isActive
-                    ? 'text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 rounded-lg ${
+                    isActive
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "hover:bg-muted"
+                  }`
+                }
               >
-                <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
-                    isActive ? 'bg-primary/15' : ''
-                  }`}
-                >
-                  <item.icon
-                    className={`h-5 w-5 ${isActive ? 'animate-scale-in' : ''}`}
-                  />
-                </div>
-                <span className="text-xs font-medium">
-                  {item.label}
-                </span>
+                <item.icon className="h-5 w-5" />
+                {item.label}
               </NavLink>
-            );
-          })}
-        </div>
+            ))}
+
+            {/* Language Section Mobile */}
+            <div className="pt-3 border-t">
+              <p className="text-sm font-semibold mb-2">
+                {t("language")}
+              </p>
+              <div className="flex gap-3">
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => changeLanguage(lang.code)}
+                    className={`px-3 py-1 rounded-lg text-sm ${
+                      i18n.language === lang.code
+                        ? "bg-primary text-white"
+                        : "bg-muted"
+                    }`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        )}
       </nav>
     </>
   );

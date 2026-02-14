@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Power, Droplet, Timer } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const WRITE_API =
   "https://api.thingspeak.com/update?api_key=28VB3EVNSX0N4IE2";
@@ -10,6 +11,7 @@ const READ_API =
 const LOCK_TIME = 15; // seconds
 
 const Node3Control = () => {
+  const { t } = useTranslation();
   const [motorStatus, setMotorStatus] = useState(false);
   const [fertilizerStatus, setFertilizerStatus] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -71,7 +73,7 @@ const Node3Control = () => {
         setIsLocked(true);
         setLockTimer(LOCK_TIME);
       } else {
-        alert("Update rejected. Wait 15 seconds.");
+        alert(t("updateRejected"));
       }
     } catch (err) {
       console.error("Write Error:", err);
@@ -84,7 +86,7 @@ const Node3Control = () => {
     <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-xl mx-auto border">
 
       <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-        ⚙ Motor & Fertilizer Control
+        ⚙ {t("motorAndFertilizerControl")}
       </h2>
 
       {/* TIMER DISPLAY */}
@@ -92,7 +94,7 @@ const Node3Control = () => {
         <div className="flex justify-center items-center gap-2 mb-6 bg-amber-100 text-amber-700 px-4 py-2 rounded-full">
           <Timer size={18} />
           <span className="font-semibold">
-            Please wait {lockTimer}s...
+            {t("pleaseWait")} {lockTimer}s...
           </span>
         </div>
       )}

@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { Thermometer, Droplet, Sun, Activity } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import Loading from "./Loading";
 import Node3Control from "./Node3Control";
 import NPKDashboard from "./NPKDashboard";
 
 type ThingSpeakFeed = {
-  field1: string | null; // Node 1
-  field2: string | null; // Node 2
+  field1: string | null;
+  field2: string | null;
   created_at: string;
 };
 
 const POLLING_INTERVAL = 15000;
 
 const Dashboard = () => {
+  const { t } = useTranslation();
+
   const [node1, setNode1] = useState<number[]>([]);
   const [node2, setNode2] = useState<number[]>([]);
   const [lastUpdated, setLastUpdated] = useState("");
@@ -31,16 +34,7 @@ const Dashboard = () => {
 
   const formatTime = (utcString: string) => {
     const date = new Date(utcString);
-    return date.toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-      timeZone: "Asia/Kolkata",
-    });
+    return date.toLocaleString();
   };
 
   const fetchData = async () => {
@@ -81,10 +75,10 @@ const Dashboard = () => {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
           <h1 className="text-3xl md:text-5xl font-bold">
-            🌱 Smart Farm Monitoring
+            🌱 {t("smartFarm")}
           </h1>
           <p className="mt-3 text-sm md:text-lg opacity-90">
-            Live Sensor Data & Motor Control System
+            {t("liveSystem")}
           </p>
         </div>
       </div>
@@ -94,14 +88,14 @@ const Dashboard = () => {
 
         {/* NODE CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <SensorCard title="Node 1" values={node1} />
-          <SensorCard title="Node 2" values={node2} />
+          <SensorCard title={t("node1")} values={node1} />
+          <SensorCard title={t("node2")} values={node2} />
         </div>
 
         {/* NODE 3 CONTROL PANEL */}
         <div className="mt-12 bg-white rounded-3xl shadow-xl p-8">
           <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-            ⚙ Motor Control Panel 
+            ⚙ {t("motorPanel")}
           </h2>
           <Node3Control />
         </div>
@@ -112,9 +106,9 @@ const Dashboard = () => {
         {/* LAST UPDATED */}
         <div className="mt-10 text-center">
           <div className="inline-block bg-white shadow-md px-6 py-3 rounded-full text-sm text-gray-700">
-            🕒 Last Updated:{" "}
+            🕒 {t("lastUpdated")}{" "}
             <span className="font-semibold text-emerald-600">
-              {lastUpdated || "Waiting for data..."}
+              {lastUpdated || t("waiting")}
             </span>
           </div>
         </div>
@@ -132,40 +126,44 @@ const SensorCard = ({
 }: {
   title: string;
   values: number[];
-}) => (
-  <div className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition">
-    <h2 className="text-xl font-bold mb-6 text-gray-800 text-center">
-      📡 {title}
-    </h2>
+}) => {
+  const { t } = useTranslation();
 
-    <div className="grid grid-cols-2 gap-6">
-      <SensorItem
-        icon={<Thermometer className="text-red-500" />}
-        label="Temperature"
-        value={values[0]}
-        unit="°C"
-      />
+  return (
+    <div className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition">
+      <h2 className="text-xl font-bold mb-6 text-gray-800 text-center">
+        📡 {title}
+      </h2>
 
-      <SensorItem
-        icon={<Activity className="text-purple-500" />}
-        label="pH Level"
-        value={values[1]}
-      />
+      <div className="grid grid-cols-2 gap-6">
+        <SensorItem
+          icon={<Thermometer className="text-red-500" />}
+          label={t("temperature")}
+          value={values[0]}
+          unit="°C"
+        />
 
-      <SensorItem
-        icon={<Droplet className="text-blue-500" />}
-        label="Water Level"
-        value={values[2]}
-      />
+        <SensorItem
+          icon={<Activity className="text-purple-500" />}
+          label={t("ph")}
+          value={values[1]}
+        />
 
-      <SensorItem
-        icon={<Sun className="text-yellow-500" />}
-        label="LDR"
-        value={values[3]}
-      />
+        <SensorItem
+          icon={<Droplet className="text-blue-500" />}
+          label={t("water")}
+          value={values[2]}
+        />
+
+        <SensorItem
+          icon={<Sun className="text-yellow-500" />}
+          label={t("ldr")}
+          value={values[3]}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /* ================= SENSOR ITEM ================= */
 
