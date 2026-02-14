@@ -5,26 +5,32 @@
 
 /**
  * Get the correct API base URL based on environment
- * - Development: http://localhost:5000
- * - Production: https://hillbackend.onrender.com
+ * - Development (localhost): http://localhost:5000
+ * - Production (Vercel): https://hillbackend.onrender.com
  */
 const getApiBaseUrl = (): string => {
-  // Check if we're in development mode
-  const isDevelopment = import.meta.env.DEV || !import.meta.env.PROD;
+  // For Vercel production deployment - always use Render backend
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  const isVercelProduction = hostname.includes('vercel.app') || hostname === 'hillsmartfarming.vercel.app';
   
-  // Check environment variable first (for flexibility)
+  // Check environment variable first (highest priority)
   const envBackendUrl = import.meta.env.VITE_BACKEND_URL;
   if (envBackendUrl) {
     return envBackendUrl;
   }
 
-  // Fallback to automatic detection
-  if (isDevelopment) {
+  // Development mode uses localhost
+  if (import.meta.env.DEV) {
     return 'http://localhost:5000';
-  } else {
-    // Production deployment on Render or similar
+  }
+
+  // For Vercel or any production deployment, use Render backend
+  if (isVercelProduction || !import.meta.env.DEV) {
     return 'https://hillbackend.onrender.com';
   }
+
+  // Final fallback
+  return 'https://hillbackend.onrender.com';
 };
 
 export const API_BASE_URL = getApiBaseUrl();
